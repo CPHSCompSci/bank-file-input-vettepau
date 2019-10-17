@@ -7,27 +7,18 @@ public class Main {
 	public static void main(String[] args) 
 	{
 		example1();
-		again();
-	}
-	
-	public static void again() {
-		Scanner scan1 = new Scanner(System.in);
-		System.out.println("Would you like to preform any additional banking functions");
-		System.out.println("yes or no");
-		String again = scan1.next();
-		if(again.equals("yes")) {
-			example1();
-			again();
-		}
-		else {}
 	}
 	
 	public static void example1()
 	{
 		Bank bank = new Bank("la banca superiore di paul");
 		String files = "bankingDataBase";
-		Bank.loadAccounts(files);
+		bank.loadAccounts(files);
 		Scanner scan = new Scanner(System.in);
+		String again = "yes";
+		String trash;
+		
+		while(again.equals("yes")) {
 		
 		System.out.println("....... MENU ....... ");
 		System.out.println();
@@ -93,13 +84,20 @@ public class Main {
 			int tf1 = scan.nextInt();
 			System.out.println("Please enter the account number of the account you would like to transfer money");
 			System.out.println();
+			trash = scan.nextLine();
 			int tf2 = scan.nextInt();
 			System.out.println("Please enter the amount you would like to transfer");
 			System.out.println();
+			trash = scan.nextLine();
 			int tf3 = scan.nextInt();
 			bank.transferFunds(tf1, tf2, tf3);
 		break;
 		}
-		Bank.saveAccounts(files);
+		bank.saveAccounts(files);
+		System.out.println("Would you like to preform any additional banking functions");
+		System.out.println("yes or no");
+		trash = scan.nextLine();
+		again = scan.next();
+		}
 	}
 }

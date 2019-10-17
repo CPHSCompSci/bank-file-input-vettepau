@@ -91,64 +91,40 @@ public class Bank {
 		}
 		
 	}
-	
-	public static void saveAccounts(String filename) {
+	public void saveAccounts(String filename) {
 		try {
-			FileWriter fw = new FileWriter ("bankingDataBase");
-			fw.append(filename);
+			FileWriter fw = new FileWriter (filename);
+			for(Account a: accounts) // enhanced for loop / for each
+			{
+				String message = a.toString();
+				fw.append(message);
+			}
 			fw.close();
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		
-		//log("Save not yet implemented.");
+		System.out.println("Save implemented.");
 	}
-
-	public static void loadAccounts(String filename) {
+	public void loadAccounts(String filename) {
 		try {
-			File inputfile = new File("info");
-			Scanner fileIn = new Scanner(inputfile);
-			
-			String line1 = fileIn.nextLine();
-			//String[] nums = line1.split(" ");
-			
-			String word = null;
-			int wordCount = indexRepeat(' ', filename) + 1;		
-			for (int a = 0; a < wordCount; a++)
-			{
-				int pos = filename.indexOf(' ');
-				if(filename.indexOf(' ') == -1)			
-				{
-					String Account = filename;
-					//Account a = new Account(a,)
-					
-				}
-				else {
-				String account = filename.substring(0, pos);
-				} 
-			}
-			fileIn.close();
-		}catch(FileNotFoundException e){
+		Scanner fileScanner = new Scanner(new File(filename));
+		
+		while(fileScanner.hasNextLine())
+		{
+			String line = fileScanner.nextLine();
+			String[] split = line.split("::");
+			int accountNumber = Integer.parseInt(split[0].substring(1));
+			String name = split[1];
+			int amount = Integer.parseInt(split[2].substring(1, split[2].length()-1));
+			Account a = new Account(accountNumber, name, amount);
+			accounts.add(a);
+		}
+			fileScanner.close();
+		}catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
 		//log("Load not yet implemented.");
-	}
-
-	public static int indexRepeat(char letter, String word)		
-	  {
-		  int a;
-		  int num = 0;
-		  for(a = 0; a < word.length()-1; a++)
-		  {
-			  if(word.charAt(a) == letter)
-			  {
-				  num++;
-			  }
-		  }	  
-		return num;
-	  }
-	
+	}	
 	private Account findAccount(int accountNumber) {
 		for (int i = accounts.size() - 1; i >= 0; i--) {
 			if (accounts.get(i).accountNumber == accountNumber)
@@ -161,7 +137,6 @@ public class Bank {
 		if (LOG)
 			System.out.println(name + " ::: " + message + ".");
 	}
-
 	/**
 	 * Private Inner Class Account
 	 * Deals with Account information
@@ -177,8 +152,15 @@ public class Bank {
 			accountNumber = accountCounter++;
 		}
 
+		private Account(int an, String name, int bal) {
+			this.accountNumber = an;
+			this.name = name;
+			this.balance = bal;
+			accountCounter++;
+		}
+		
 		public String toString() {
-			return "{" + accountNumber + "::" + name + "::$" + balance + "}";
+			return "{" + accountNumber + "::" + name + "::$" + balance + "}\n";
 		}
 
 	}
