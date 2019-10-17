@@ -1,6 +1,8 @@
 package app;
 
+import java.text.DecimalFormat;
 import java.util.Scanner;
+
 
 public class Main {
 
@@ -29,7 +31,6 @@ public class Main {
 		System.out.println("Close Account 			5");
 		System.out.println("Transfer Funds 			6");
 		System.out.println();
-		System.out.println();
 		
 		int menu = scan.nextInt();
 		
@@ -42,7 +43,13 @@ public class Main {
 			System.out.println("Please enter the amount you would like to deposit");
 			System.out.println();
 			int d2 = scan.nextInt();
-			bank.deposit(d1, d2);
+			boolean d3 = bank.deposit(d1, d2);
+			if(d3) {
+				System.out.println("Successfully deposited $" + d2 + " to your account");
+			}
+			else {
+				System.out.println("Could not deposit to account , please check if that was the right number");
+			}
 		break;
 		
 		case 2: //withdraw
@@ -52,21 +59,40 @@ public class Main {
 			System.out.println("Please enter the amount you would like to withdraw");
 			System.out.println();
 			int w2 = scan.nextInt();
-			bank.withdraw(w1, w2);
+			int w3 = bank.withdraw(w1, w2);
+			if(w3 == 2) {
+				System.out.println("Successfully withdrew $" + w2);
+			}
+			else if(w3 == 1){
+				System.out.println("Insufficient funds in account");
+			}
+			else {
+				System.out.println("Could not withdraw from account, please check if that was the right number ");
+			}
 		break;
 		
 		case 3: //check balance
+			DecimalFormat decimalZero = new DecimalFormat("0.00");
 			System.out.println("Please enter your account number");
 			System.out.println();
 			int c1 = scan.nextInt();
-			System.out.println(bank.checkBalance(c1));
+			int c2 = bank.checkBalance(c1);
+			if(c2 >= 0) {
+				System.out.println("Your balance is: $" + decimalZero.format(c2));
+			}
+			else {
+				System.out.println("Could not check balance of account, please check if that was the right number");
+			}
 		break;
 		
 		case 4: //create account
+			DecimalFormat sixMin = new DecimalFormat("000000");
 			System.out.println("Please enter your first and last name");
 			System.out.println();
 			String cta1 = scan.next();
-			System.out.println("Your new account number is: " + bank.createAccount(cta1));
+			String cta2 = scan.next();
+			cta1 = cta1 + " " +cta2;
+			System.out.println("Your new account number is: " + sixMin.format(bank.createAccount(cta1)));
 			System.out.println("Please save this number for future transactions");
 			System.out.println();
 		break;
@@ -75,10 +101,17 @@ public class Main {
 			System.out.println("Please enter your account number");
 			System.out.println();
 			int cla1 = scan.nextInt();
-			bank.closeAccount(cla1);
+			boolean cla2 = bank.closeAccount(cla1);
+			if(cla2) {
+				System.out.println("Successfully closed, hopefully our service has been satisfactory");
+			}
+			else {
+				System.out.println("Could not close account, please check if that was the right number");
+			}
 		break;
 		
 		case 6: //transfer funds
+			DecimalFormat decimalZero1 = new DecimalFormat("0.00");
 			System.out.println("Please enter your account number");
 			System.out.println();
 			int tf1 = scan.nextInt();
@@ -90,7 +123,13 @@ public class Main {
 			System.out.println();
 			trash = scan.nextLine();
 			int tf3 = scan.nextInt();
-			bank.transferFunds(tf1, tf2, tf3);
+			boolean tf4 = bank.transferFunds(tf1, tf2, tf3);
+			if(tf4) {
+				System.out.println("Successfully transfered $" + decimalZero1.format(tf3));
+			}
+			else {
+				System.out.println("Could not transfer funds, please check if that was the right number");
+			}
 		break;
 		}
 		bank.saveAccounts(files);

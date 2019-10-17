@@ -19,75 +19,64 @@ public class Bank {
 	public Bank(String name) {
 		this.name = name;
 		accounts = new ArrayList<>();
-		log("Bank Created");
+		//log("Bank Created");
 	}
 
 	public int createAccount(String name) {
 		Account newAccount = new Account(name);
 		accounts.add(newAccount);
-
-		System.out.println("Successful Transaction");
 		return newAccount.accountNumber;
 	}
 
 	public boolean closeAccount(int accountNumber) {
 		Account account = findAccount(accountNumber);
 		if (account == null) {
-			System.out.println("Could not close account, please check if that was the right number");
-			Main.example1();
 			return false;
 		}
 		accounts.remove(account);
-		System.out.println("Successfully closed, hopefully our service has been satisfactory");
 		return true;
 	}
 
 	public boolean deposit(int accountNumber, int amount) {
 		Account account = findAccount(accountNumber);
 		if (account == null) {
-			System.out.println("Could not deposit to account , please check if that was the right number");
 			return false;
 		}
 		account.balance += amount;
-		System.out.println("Successfully deposited $" + amount + " to your account");
 		return true;
 	}
 
-	public boolean withdraw(int accountNumber, int amount) {
+	public int withdraw(int accountNumber, int amount) {
 		Account account = findAccount(accountNumber);
 		if (account == null) {
-			System.out.println("Could not withdraw from account, please check if that was the right number ");
-			return false;
+			return 0;
 		}
 		if (account.balance < amount) {
-			System.out.println("Insufficient funds in ");
-			return false;
+			return 1;
 		}
 		account.balance -= amount;
-		System.out.println("Successfully withdrew $" + amount);
-		return true;
+		return 2;
 	}
 
 	public int checkBalance(int accountNumber) {
 		Account account = findAccount(accountNumber);
 		if (account == null) {
-			System.out.println("Could not check balance of account, please check if that was the right number");
 			return -1;
 		}
-		System.out.println("Your balance is: " + account.balance);
 		return account.balance;
 	}
 
-	public void transferFunds(int accountnum, int accountnum2, int amount) {
+	public boolean transferFunds(int accountnum, int accountnum2, int amount) {
 		Account account = findAccount(accountnum);
 		Account account2 = findAccount(accountnum2);
-		if (account.equals(null) && account2.equals(null))
+		if (account.equals(null) || account2.equals(null))
 		{
-			System.out.println("Could not transfer funds, please check if that was the right number");
+			return false;
 		}
 		else {
 			account2.balance += amount;
-			System.out.println("Successfully transfered $" + amount);
+			account.balance -= amount;
+			return true;
 		}
 		
 	}
@@ -123,7 +112,6 @@ public class Bank {
 		}catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		//log("Load not yet implemented.");
 	}	
 	private Account findAccount(int accountNumber) {
 		for (int i = accounts.size() - 1; i >= 0; i--) {
@@ -149,14 +137,27 @@ public class Bank {
 		private Account(String name) {
 			this.name = name;
 			balance = 0;
-			accountNumber = accountCounter++;
+			accountNumber = getRandomAccountNumber();
 		}
 
 		private Account(int an, String name, int bal) {
 			this.accountNumber = an;
 			this.name = name;
 			this.balance = bal;
-			accountCounter++;
+		}
+		
+		private int getRandomAccountNumber() {
+			boolean flag = false;
+			int num = 0;
+			do {
+				num = (int)(Math.random() * 1000000);
+				for(Account a: accounts)
+				{
+					if(a.accountNumber == num)
+						flag = true;
+				}
+			}while(flag);
+			return num;
 		}
 		
 		public String toString() {
